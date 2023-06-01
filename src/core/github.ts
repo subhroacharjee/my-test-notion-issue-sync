@@ -1,11 +1,12 @@
 import * as github from '@actions/github'
-import { GithubEvent, Issue, RepositoryResponse } from '../types'
+import {GithubEvent, Issue, RepositoryResponse} from '../types'
 
 export default class Github {
   private octokit
   private ghEvent: GithubEvent
-  constructor(token: string, event: any) {
+  constructor(token: string, jsonEvent: string) {
     this.octokit = github.getOctokit(token)
+    const event = JSON.parse(jsonEvent)
     this.ghEvent = {
       action: event.action,
       owner: github.context.repo.owner,
@@ -22,8 +23,7 @@ export default class Github {
     return this.ghEvent
   }
 
-  async getAttachedIssues(
-  ): Promise<Issue[]> {
+  async getAttachedIssues(): Promise<Issue[]> {
     const result: RepositoryResponse = await this.octokit.graphql(
       `
         query($owner: String!, $name: String!, $pr: Int!) {
@@ -48,15 +48,13 @@ export default class Github {
     return result.repository.pullRequest.closingIssuesReferences.nodes
   }
 
-  async addPrefixToPRTitle(prefix: string) {
+  async addPrefixToPRTitle(prefix: string): Promise<void> {
     const newTitle = prefix + this.ghEvent.title
-    const resp = await this.octokit.rest.pulls.update({
+    await this.octokit.rest.pulls.update({
       owner: this.ghEvent.owner,
       pull_number: this.ghEvent.pr,
       repo: this.ghEvent.name,
       title: newTitle
     })
-    return resp
   }
 }
-

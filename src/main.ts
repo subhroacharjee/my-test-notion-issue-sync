@@ -3,25 +3,24 @@ import Github from './core/github'
 
 async function run(): Promise<void> {
   try {
-    core.info("Working!!")
+    core.info('Working!!')
     const token = core.getInput('token', {
       required: true
     })
-    const event = JSON.parse(
-      core.getInput('event', {
-        required: true
-      })
-    )
+    const event = core.getInput('event', {
+      required: true
+    })
+
     const gh = new Github(token, event)
     const issues = await gh.getAttachedIssues()
 
     core.info(JSON.stringify(issues))
-    for (const { body } of issues) {
-      if (body.includes("IDNo:")) {
-        core.info("Working!!")
-        const prefix = `[${body.split("IDNo:")[1].trim()}] `
+    for (const {body} of issues) {
+      if (body.includes('IDNo:')) {
+        core.info('Working!!')
+        const prefix = `[${body.split('IDNo:')[1].trim()}] `
         await gh.addPrefixToPRTitle(prefix)
-        core.info("added prefix")
+        core.info('added prefix')
       }
     }
   } catch (error) {
