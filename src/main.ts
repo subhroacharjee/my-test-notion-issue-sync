@@ -15,6 +15,7 @@ async function run(): Promise<void> {
     const issues = await gh.getAttachedIssues()
     for (const { body } of issues) {
       if (body.includes("IDNo:")) {
+        core.info("Working!!")
         const prefix = `[${body.split("IDNo:")[1].trim()}] `
         await gh.addPrefixToPRTitle(prefix)
         core.info("added prefix")

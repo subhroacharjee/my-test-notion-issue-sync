@@ -56,6 +56,7 @@ export default class Github {
       repo: this.ghEvent.name,
       title: newTitle
     })
+    return resp
   }
 }
 
