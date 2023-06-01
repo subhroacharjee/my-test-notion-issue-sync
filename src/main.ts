@@ -17,6 +17,7 @@ async function run(): Promise<void> {
       if (body.includes("IDNo:")) {
         const prefix = `[${body.split("IDNo:")[1].trim()}] `
         gh.addPrefixToPRTitle(prefix)
+        core.info("added prefix")
       }
     }
   } catch (error) {
