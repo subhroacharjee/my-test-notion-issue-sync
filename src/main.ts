@@ -3,6 +3,7 @@ import Github from './core/github'
 
 async function run(): Promise<void> {
   try {
+    core.info("Working!!")
     const token = core.getInput('token', {
       required: true
     })
@@ -13,6 +14,8 @@ async function run(): Promise<void> {
     )
     const gh = new Github(token, event)
     const issues = await gh.getAttachedIssues()
+
+    core.info(JSON.stringify(issues))
     for (const { body } of issues) {
       if (body.includes("IDNo:")) {
         core.info("Working!!")
